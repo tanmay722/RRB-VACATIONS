@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import HeroSection from "../components/home/HeroSection";
 import FeaturedDestinations from "../components/FeaturedDestinations";
 import TestimonialSection from "../components/TestimonialSection";
-// import SearchForm from "../components/home/SearchForm";
 import WhyChooseUs from "../components/WhyChooseUs";
 import DomesticPackage from "../components/home/DomesticPackage";
 import InternationalPackage from "../components/home/InternationalPackage";
@@ -13,13 +11,6 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <HeroSection />
-
-      {/* Search Section */}
-      {/* <section className="py-10 px-4 md:px-8 lg:px-16 bg-white">
-        <div className="container mx-auto">
-          <SearchForm />
-        </div>
-      </section> */}
 
       {/* Featured Domestic Packages */}
       <DomesticPackage />
@@ -54,10 +45,10 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex px-8 py-4 bg-white text-orange-500 font-bold rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => window.open("tel:+919415255168")}
+              onClick={() => window.open("tel:+919415292315")}
             >
               <Phone className="h-5 w-5 mr-2" />
-              <span className="font-medium">+91 9415255168</span>
+              <span className="font-medium">+91 9415292315</span>
             </motion.button>
           </div>
         </div>

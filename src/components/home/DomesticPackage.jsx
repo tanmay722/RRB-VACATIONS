@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import img1 from "../../assets/Domestic/Varanasi/1.jpg";
-import img2 from "../../assets/Domestic/Prayagraj/1.jpg";
+import img2 from "../../assets/Domestic/Darjeeling/1.jpg";
 import img3 from "../../assets/Domestic/Rajasthan/1.jpg";
 
 // Sample data for domestic packages
@@ -24,15 +24,15 @@ const domesticPackages = [
   },
   {
     id: 2,
-    title: "Prayagraj Sangam Kumbh Mela Tour",
-    location: "Prayagraj",
+    title: "Darjeeling Gangtok Tour",
+    location: "West Bengal, Sikkim",
     image: img2,
-    duration: "5 Days / 4 Nights",
-    price: "₹18,999",
+    duration: "6 Days / 5 Nights",
+    price: "₹28,999",
     rating: 4.9,
-    category: "RELIGIOUS",
+    category: "ADVENTURE",
     featured: true,
-    slug: "prayagraj",
+    slug: "darjeeling-gangtok",
   },
   {
     id: 3,
