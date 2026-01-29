@@ -195,19 +195,6 @@ export default function Footer() {
                     rrbvacations@gmail.com
                   </span>
                 </li>
-                <li className="flex items-start">
-                  <MapPin className="h-5 w-5 mr-3 text-orange-500 mt-1" />
-                  <span className="text-gray-400">
-                    <strong>Branch Office:</strong> 177, Ponniamman Koil Street,
-                    Alapakkam, Chennai - 600116
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <Phone className="h-5 w-5 mr-3 text-orange-500 mt-1" />
-                  <span className="text-gray-400">
-                    <strong>Contact:</strong> +91 9151110165
-                  </span>
-                </li>
               </ul>
             </div>
           </div>

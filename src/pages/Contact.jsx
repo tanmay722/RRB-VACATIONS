@@ -84,7 +84,7 @@ export default function Contact() {
       <section className="py-16 px-4 md:px-8 lg:px-16 bg-white">
         <div className="container mx-auto">
           {/* Contact Information Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Head Office */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -104,25 +104,6 @@ export default function Contact() {
               </p>
               <p className="text-gray-600"> +91 9415255168</p>
               <p className="text-gray-600"> +91 9305866710</p>
-            </motion.div>
-
-            {/* Branch Office */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-gray-50 p-6 rounded-lg text-center"
-            >
-              <div className="flex justify-center mb-4">
-                <div className="bg-orange-100 p-3 rounded-full">
-                  <MapPin className="h-8 w-8 text-orange-500" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Branch Office</h3>
-              <p className="text-gray-600 mb-2">
-                177, Ponniamman Koil Street, Alapakkam, Chennai - 600116
-              </p>
-              <p className="text-gray-600"> +91 9151110165</p>
             </motion.div>
 
             {/* Email */}

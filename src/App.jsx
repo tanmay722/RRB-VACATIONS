@@ -10,7 +10,6 @@ import PackageDetail from "./pages/PackageDetail";
 import TermsOfUse from "./pages/TermsOfUse";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
-import Transportation from "./pages/Transportation";
 
 // ScrollToTop component
 function ScrollToTop() {
@@ -33,7 +32,6 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/packages" element={<AllPackages />} />
           <Route path="/packages/:id" element={<PackageDetail />} />
-          <Route path="/transportation" element={<Transportation />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund" element={<RefundPolicy />} />

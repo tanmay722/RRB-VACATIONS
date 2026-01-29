@@ -59,23 +59,21 @@ export default function About() {
               <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-700">
                 <p>
-                  Founded in 2015, RRB Vacations, Kashi began with a simple
-                  mission: to help travelers discover the incredible diversity
-                  and beauty of India through carefully crafted tour packages.
+                  Founded in 2025, RRB Vacations, Kashi began with a clear
+                  purpose: to reveal India's profound beauty and diversity
+                  through meticulously designed travel experiences.
                 </p>
                 <p>
-                  What started as a small team of passionate travel enthusiasts
-                  has grown into a trusted tour operator serving thousands of
-                  satisfied customers each year. Our journey has been defined by
-                  our commitment to authentic experiences, attention to detail,
+                  Evolving from a dedicated team of enthusiasts into a trusted
+                  operator serving thousands annually, our growth is rooted in
+                  an unwavering commitment to authenticity, attention to detail,
                   and personalized service.
                 </p>
                 <p>
-                  Today, we offer a wide range of domestic and international
-                  tour packages, from spiritual pilgrimages to luxury honeymoon
-                  getaways. Our team of experienced travel professionals works
-                  tirelessly to ensure every aspect of your journey exceeds
-                  expectations.
+                  Today, we offer an extensive portfolio of domestic and
+                  international tours—from spiritual pilgrimages to luxury
+                  honeymoons. Our seasoned professionals diligently craft every
+                  journey to ensure an experience that surpasses expectations.
                 </p>
               </div>
             </motion.div>

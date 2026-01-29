@@ -80,7 +80,7 @@ export default function Navbar() {
         scrolled ? "bg-white shadow-md py-2" : "bg-white backdrop-blur-md py-4"
       }`}
     >
-      <div ref={navRef} className="container mx-auto px-4">
+      <div ref={navRef} className="mx-auto px-2">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export default function Navbar() {
               className="h-14 md:h-14 lg:h-16 w-auto"
             />
             <div className="relative h-12 w-64">
-              <div className="font-bold text-2xl text-orange-500">
+              <div className="font-bold text-2xl lg:text-xl 2xl:text-2xl text-orange-500">
                 RRB Vacations, Kashi{" "}
               </div>
               <div className="text-xs text-gray-500">
@@ -100,12 +100,11 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6 2xl:space-x-8">
+          <nav className="hidden lg:flex items-center space-x-2 xl:space-x-6 2xl:space-x-8">
             {[
               { to: "/", label: "Home" },
               { to: "/about", label: "About Us" },
-              { to: "/packages", label: "View All Packages" },
-              { to: "/transportation", label: "Car Rental" },
+              { to: "/packages", label: "All Packages" },
               { to: "/contact", label: "Contact Us" },
             ].map(({ to, label }) => (
               <Link
@@ -188,8 +187,10 @@ export default function Navbar() {
 
           {/* Phone Contact (Desktop Only) */}
           <div className="hidden lg:flex items-center text-orange-500 font-semibold">
-            <Phone className="h-5 w-5 mr-2" />
-            +91 9415255168
+            <Phone className="h-5 w-5 mr-2 lg:mr-0 xl:mr-2" />
+            +91
+            <nbsp />
+            9415255168
           </div>
 
           {/* Hamburger Menu (Mobile) */}
@@ -216,7 +217,7 @@ export default function Navbar() {
               {[
                 { to: "/", label: "Home" },
                 { to: "/about", label: "About Us" },
-                { to: "/packages", label: "View All Packages" },
+                { to: "/packages", label: "All Packages" },
                 { to: "/packages/kashi", label: "Kashi Tour" },
                 { to: "/packages/ayodhya", label: "Ayodhya Tour" },
               ].map(({ to, label }) => (
@@ -325,23 +326,22 @@ export default function Navbar() {
                   )}
                 </AnimatePresence>
               </div>
-              {[
-                { to: "/transportation", label: "Car Rental" },
-                { to: "/contact", label: "Contact Us" },
-              ].map(({ to, label }) => (
-                <Link
-                  key={label}
-                  to={to}
-                  onClick={() => {
-                    setIsOpen(false);
-                    setActiveDomesticDropdown(false);
-                    setActiveInternationalDropdown(false);
-                  }}
-                  className="block text-gray-700 hover:text-orange-500 py-2 border-b"
-                >
-                  {label}
-                </Link>
-              ))}
+              {[{ to: "/contact", label: "Contact Us" }].map(
+                ({ to, label }) => (
+                  <Link
+                    key={label}
+                    to={to}
+                    onClick={() => {
+                      setIsOpen(false);
+                      setActiveDomesticDropdown(false);
+                      setActiveInternationalDropdown(false);
+                    }}
+                    className="block text-gray-700 hover:text-orange-500 py-2 border-b"
+                  >
+                    {label}
+                  </Link>
+                ),
+              )}
 
               {/* Phone (Mobile) */}
               <div
