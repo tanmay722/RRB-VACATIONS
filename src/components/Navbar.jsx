@@ -190,7 +190,7 @@ export default function Navbar() {
             <Phone className="h-5 w-5 mr-2 lg:mr-0 xl:mr-2" />
             +91
             <nbsp />
-            9415255168
+            9415292315
           </div>
 
           {/* Hamburger Menu (Mobile) */}
