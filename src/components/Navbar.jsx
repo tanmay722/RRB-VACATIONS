@@ -77,7 +77,7 @@ export default function Navbar() {
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-white shadow-md py-2" : "bg-white backdrop-blur-md py-4"
+        scrolled ? "bg-white shadow-md py-1" : "bg-white backdrop-blur-md py-2"
       }`}
     >
       <div ref={navRef} className="mx-auto px-2">

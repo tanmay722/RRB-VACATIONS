@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import img1 from "../../assets/Home/1.png";
-import img2 from "../../assets/Home/2.webp";
+import img1 from "../../assets/Home/1.jpg";
+import img2 from "../../assets/Home/2.jpg";
 import img3 from "../../assets/Home/3.jpg";
+import img4 from "../../assets/Home/4.jpg";
 
 const slides = [
   {
     id: 1,
-    image: img2,
+    image: img1,
     title: "Discover the Beauty of India",
     subtitle:
       "Explore sacred temples, majestic mountains, and vibrant cultures",
@@ -18,7 +19,16 @@ const slides = [
   },
   {
     id: 2,
-    image: img1,
+    image: img2,
+    title: "Enlightening Spiritual Journey Experience",
+    subtitle:
+      "Guided pilgrimage tours to sacred spiritual destinations across India",
+    cta: "Explore all Tours",
+    link: "/packages",
+  },
+  {
+    id: 3,
+    image: img3,
     title: "Adventure, Wildlife and Culture Tours",
     subtitle:
       "From thrilling wildlife to vibrant cultural festivals, experience it all",
@@ -26,11 +36,11 @@ const slides = [
     link: "/packages",
   },
   {
-    id: 3,
-    image: img3,
-    title: "Enlightening Spiritual Journey Experience",
+    id: 4,
+    image: img4,
+    title: "Discover the Beauty of Nature",
     subtitle:
-      "Guided pilgrimage tours to sacred spiritual destinations across India",
+      "Experience breathtaking landscapes, wildlife, and cultural heritage",
     cta: "Explore all Tours",
     link: "/packages",
   },
