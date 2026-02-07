@@ -42,7 +42,7 @@ export default function AllPackages() {
       filtered = filtered.filter(
         (pkg) =>
           pkg.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          pkg.location.toLowerCase().includes(searchTerm.toLowerCase())
+          pkg.location.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 

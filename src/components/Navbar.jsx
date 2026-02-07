@@ -5,37 +5,57 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 
 const domesticPackages = [
-  { name: "Andaman Honeymoon Packages", href: "/packages/andaman" },
-  { name: "Ayodhya Temple Tour Packages", href: "/packages/ayodhya" },
-  {
-    name: "Buddhist Temple Tour Packages Bodhgaya",
-    href: "/packages/buddhist-temple",
-  },
-  { name: "Buddhist Tour Packages India", href: "/packages/buddhist-india" },
-  {
-    name: "Complete Buddhist Pilgrimage Tour Packages",
-    href: "/packages/buddhist-pilgrimage",
-  },
-  {
-    name: "Darjeeling Gangtok Tour Packages",
-    href: "/packages/darjeeling-gangtok",
-  },
-  { name: "Goa Honeymoon Tour Packages", href: "/packages/goa" },
   { name: "Kashi Tour Packages", href: "/packages/kashi" },
-  { name: "Kashmir Honeymoon Tour Packages", href: "/packages/kashmir" },
-  { name: "Kerala Mysore Tour Packages", href: "/packages/kerala-mysore" },
-  { name: "Leh Ladakh Tour Packages", href: "/packages/leh-ladakh" },
-  { name: "Pind Daan Complete Tour Packages", href: "/packages/pind-daan" },
   {
-    name: "Prayagraj Sangam Kumbh Mela Tour Packages",
-    href: "/packages/prayagraj",
+    name: "Shri Krishna Janmasthan Temple Tour",
+    href: "/packages/shri-krishna-janmasthan",
   },
-  { name: "Rajasthan Honeymoon Tour Packages", href: "/packages/rajasthan" },
+  {
+    name: "Kashi Prayagraj Gaya Dham Yatra",
+    href: "/packages/kashi-prayagraj-gaya",
+  },
+  {
+    name: "Kashi Gaya Ayodhya Lucknow Tour",
+    href: "/packages/kashi-gaya-ayodhya-lucknow",
+  },
+  { name: "Kashi Gaya Patna Tour", href: "/packages/kashi-gaya-patna" },
+  { name: "Gaya Pind Dan Yatra", href: "/packages/pind-daan" },
+  {
+    name: "Kashi Prayagraj Ayodhya Naimisharnya Lucknow Tour",
+    href: "/packages/kashi-prayagraj-ayodhya-lucknow",
+  },
+  {
+    name: "Kashi Ayodhya Prayagraj Chitrakoot Adhyatma Yatra",
+    href: "/packages/kashi-ayodhya-prayagraj-chitrakoot",
+  },
+  {
+    name: "Kashi Prayagraj Gaya Patna Tour",
+    href: "/packages/kashi-prayagraj-gaya-patna",
+  },
+  {
+    name: "Kashi Gaya Kushinagar Lumbini Nepal Tour",
+    href: "/packages/kashi-gaya-kushinagar-lumbini-nepal",
+  },
+  {
+    name: "Pashupati Nath Ji Kathmandu Darshan with Kashi Lumbini Yatra",
+    href: "/packages/kathmandu-kashi-lumbini",
+  },
   {
     name: "Shimla Kufri Manali Tour Packages",
     href: "/packages/shimla-manali",
   },
-  { name: "Varanasi Tour Packages", href: "/packages/varanasi" },
+  {
+    name: "Buddhist Temple Tour Packages Bodhgaya",
+    href: "/packages/buddhist-temple",
+  },
+  { name: "Ayodhya Temple Tour Packages", href: "/packages/ayodhya" },
+  { name: "Andaman Honeymoon Package", href: "/packages/andaman" },
+  { name: "Darjeeling Gangtok Tour", href: "/packages/darjeeling-gangtok" },
+  { name: "Goa Honeymoon Tour Packages", href: "/packages/goa" },
+  { name: "Kashmir Honeymoon Tour Packages", href: "/packages/kashmir" },
+  { name: "Kerala Mysore Tour", href: "/packages/kerala-mysore" },
+  { name: "Leh Ladakh Tour", href: "/packages/leh-ladakh" },
+  { name: "Rajasthan Honeymoon Tour", href: "/packages/rajasthan" },
 ];
 
 const internationalPackages = [
