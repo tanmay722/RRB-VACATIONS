@@ -113,9 +113,7 @@ export default function Navbar() {
               <div className="font-bold text-2xl lg:text-xl 2xl:text-2xl text-orange-500">
                 RRB Vacations, Kashi{" "}
               </div>
-              <div className="text-xs text-gray-500">
-                Explore the world with us
-              </div>
+              <div className="text-xs text-gray-500">DMC of Uttar Pradesh</div>
             </div>
           </Link>
 

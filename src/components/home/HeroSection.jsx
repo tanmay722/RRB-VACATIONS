@@ -58,16 +58,16 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="h-[95vh]">
+    <section className="relative h-[95vh] overflow-hidden">
       {/* Slides */}
       {slides.map((slide, index) => (
         <div
           key={slide.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
+            index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
-          <div className="relative pt-20 h-full w-full">
+          <div className="relative pt-[72px] h-full w-full">
             <img
               src={slide.image || "/placeholder.svg"}
               alt={slide.title}

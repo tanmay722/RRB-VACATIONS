@@ -27,9 +27,14 @@ export default function Footer() {
                   alt="RRB Vacations, Kashi Logo"
                   className="h-10 md:h-14 lg:h-16 w-auto"
                 />
-                <span className="md:ml-4 text-xl font-bold">
-                  RRB Vacations, Kashi{" "}
-                </span>
+                <div>
+                  <span className="block md:ml-4 text-xl font-bold">
+                    RRB Vacations, Kashi{" "}
+                  </span>
+                  <span className="block md:ml-4 textsm font-light text-gray-400">
+                    DMC of Uttar Pradesh
+                  </span>
+                </div>
               </div>
               <p className="text-gray-400 mb-4">
                 Your trusted partner for domestic and international tour
