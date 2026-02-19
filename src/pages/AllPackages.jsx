@@ -6,7 +6,7 @@ import domesticTours from "../data/domestic-tours";
 import internationalTours from "../data/international-tours";
 import { useLocation } from "react-router-dom";
 
-import img1 from "../assets/International/Thailand/4.avif";
+import img1 from "../assets/International/Dubai/1.jpg";
 
 // Combine all packages from both sources
 const allPackages = [...domesticTours, ...internationalTours];

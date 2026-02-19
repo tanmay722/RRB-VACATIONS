@@ -62,13 +62,7 @@ const internationalPackages = [
   { name: "Bali Paradise Tour ", href: "/packages/bali-paradise" },
   { name: "Dubai Adventure Tour ", href: "/packages/dubai" },
   { name: "Nepal Kathmandu Tour ", href: "/packages/nepal" },
-  { name: "Oman Honeymoon Tour ", href: "/packages/oman" },
-  { name: "Switzerland Holidays Tour ", href: "/packages/switzerland" },
-  {
-    name: "Thailand Discovery Tour ",
-    href: "/packages/thailand-discovery",
-  },
-  { name: "Umrah Tour ", href: "/packages/umrah" },
+  { name: "Mauritius Island Paradise Tour ", href: "/packages/mauritius" },
 ];
 
 export default function Navbar() {

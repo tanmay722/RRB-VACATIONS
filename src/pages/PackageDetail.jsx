@@ -20,15 +20,12 @@ import domesticTours from "../data/domestic-tours";
 import internationalTours from "../data/international-tours";
 import importantNotes from "../data/important-notes";
 
-import kashi1 from "../assets/Domestic/Varanasi/1.jpg";
-import Buddhist1 from "../assets/Domestic/Bodhgaya/1.jpg";
-import Ayodhya1 from "../assets/Domestic/Ayodhya/1.jpg";
-
 export default function PackageDetail() {
   const { id } = useParams(); // `id` here refers to the slug in the URL
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [relatedPackages, setRelatedPackages] = useState([]);
 
   // Combine domestic and international tours
   const allTours = [...domesticTours, ...internationalTours];
@@ -39,6 +36,20 @@ export default function PackageDetail() {
   useEffect(() => {
     setIsLoaded(true);
   }, []);
+
+  // Generate related packages based on type
+  useEffect(() => {
+    if (packageData) {
+      // Filter packages by type, excluding current package
+      const sameTypePackages = allTours.filter(
+        (pkg) => pkg.type === packageData.type && pkg.slug !== packageData.slug,
+      );
+
+      // Shuffle and get 3 random packages
+      const shuffled = sameTypePackages.sort(() => 0.5 - Math.random());
+      setRelatedPackages(shuffled.slice(0, 3));
+    }
+  }, [packageData]);
 
   const nextImage = () => {
     setCurrentImageIndex(
@@ -427,41 +438,7 @@ export default function PackageDetail() {
           <h2 className="text-3xl font-bold mb-8">Packages You May Like</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                id: 3,
-                title: "Prayagraj Sangam Kumbh Mela Tour",
-                location: "Prayagraj",
-                image: kashi1,
-                duration: "5 Days / 4 Nights",
-                price: "₹18,999",
-                rating: 4.9,
-                slug: "prayagraj",
-                category: "RELIGIOUS",
-              },
-              {
-                id: 4,
-                title: "Complete Buddhist Pilgrimage Tour",
-                location: "Bodhgaya, Rajgir, Nalanda",
-                image: Buddhist1,
-                duration: "7 Days / 6 Nights",
-                price: "₹24,999",
-                rating: 4.8,
-                slug: "buddhist-pilgrimage",
-                category: "RELIGIOUS",
-              },
-              {
-                id: 2,
-                title: "Ayodhya Temple Tour Package",
-                location: "Ayodhya, Uttar Pradesh",
-                image: Ayodhya1,
-                duration: "2 Days / 1 Night",
-                price: "₹8,999",
-                rating: 4.8,
-                slug: "ayodhya",
-                category: "RELIGIOUS",
-              },
-            ].map((pkg, index) => (
+            {relatedPackages.map((pkg, index) => (
               <motion.div
                 key={pkg.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -497,7 +474,9 @@ export default function PackageDetail() {
                           {pkg.rating}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-500">(80+ Reviews)</div>
+                      <div className="text-xs text-gray-500">
+                        ({pkg.reviews}+ Reviews)
+                      </div>
                     </div>
 
                     <div className="flex items-center text-gray-500 text-sm mb-4">
@@ -505,23 +484,12 @@ export default function PackageDetail() {
                       <span>{pkg.duration}</span>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-gray-500 text-xs">
-                          Starting from
-                        </span>
-                        <div className="text-lg font-bold text-orange-500">
-                          {pkg.price}
-                        </div>
-                      </div>
-
-                      <Link
-                        to={`/packages/${pkg.slug}`}
-                        className="px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 transition-colors duration-300"
-                      >
-                        View Details
-                      </Link>
-                    </div>
+                    <Link
+                      to={`/packages/${pkg.slug}`}
+                      className="block w-full px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 transition-colors duration-300 text-center"
+                    >
+                      View Details
+                    </Link>
                   </div>
                 </div>
               </motion.div>

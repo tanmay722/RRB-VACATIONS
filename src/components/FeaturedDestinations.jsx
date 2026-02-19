@@ -8,7 +8,7 @@ import img2 from "../assets/Domestic/Rajasthan/1.jpg";
 import img3 from "../assets/Domestic/Mysore/1.jpg";
 import img4 from "../assets/Domestic/Goa/1.jpg";
 import img5 from "../assets/International/Dubai/1.jpg";
-import img6 from "../assets/International/Switzerland/1.jpg";
+import img6 from "../assets/International/Mauritius/1.jpg";
 import img7 from "../assets/International/Nepal/1.jpg";
 import img8 from "../assets/International/Bali/1.jpg";
 
@@ -45,9 +45,9 @@ const destinations = [
   },
   {
     id: 6,
-    name: "Switzerland",
+    name: "Mauritius",
     image: img6,
-    category: "Adventure",
+    category: "Beach",
   },
   {
     id: 7,

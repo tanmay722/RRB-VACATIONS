@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 import img1 from "../../assets/International/Dubai/1.jpg";
 import img2 from "../../assets/International/Nepal/1.jpg";
-import img3 from "../../assets/International/Switzerland/1.jpg";
+import img3 from "../../assets/International/Mauritius/1.jpg";
 
 // Sample data for international packages
 const internationalPackages = [
@@ -16,7 +16,6 @@ const internationalPackages = [
     location: "Dubai, Abu Dhabi",
     image: img1,
     duration: "7 Days / 6 Nights",
-    price: "₹55,999",
     rating: 4.7,
     category: "ADVENTURE",
     featured: true,
@@ -28,7 +27,6 @@ const internationalPackages = [
     location: "Kathmandu, Pokhara",
     image: img2,
     duration: "6 Days / 5 Nights",
-    price: "₹45,999",
     rating: 4.7,
     category: "ADVENTURE",
     featured: true,
@@ -36,15 +34,14 @@ const internationalPackages = [
   },
   {
     id: 3,
-    title: "Switzerland Holidays Tour",
-    location: "Zurich, Geneva, Lucerne",
+    title: "Mauritius Island Paradise Tour",
+    location: "Mauritius",
     image: img3,
-    duration: "8 Days / 7 Nights",
-    price: "₹1,85,000",
-    rating: 4.9,
-    category: "FAMILY",
+    duration: "7 Days / 6 Nights",
+    rating: 4.8,
+    category: "HONEYMOON",
     featured: true,
-    slug: "switzerland",
+    slug: "mauritius",
   },
 ];
 
