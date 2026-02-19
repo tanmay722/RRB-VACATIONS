@@ -102,8 +102,7 @@ export default function Contact() {
                 Brahmdev Vihar Colony, Chunar Road, Chitaipur, Varanasi, Uttar
                 Pradesh, 221106
               </p>
-              <p className="text-gray-600"> +91 9415292315</p>
-              <p className="text-gray-600"> +91 9415292315</p>
+              <p className="text-gray-600"> +91 9839976261</p>
             </motion.div>
 
             {/* Email */}
@@ -120,6 +119,7 @@ export default function Contact() {
               </div>
               <h3 className="text-xl font-bold mb-2">Email Address</h3>
               <p className="text-gray-600">rrbvacations@gmail.com</p>
+              <p className="text-gray-600">inbound@rrbvacationskashi.com</p>
             </motion.div>
 
             {/* Working Hours */}
@@ -175,7 +175,7 @@ export default function Contact() {
 
                 {/* WhatsApp Button */}
                 <a
-                  href="https://wa.me/919415292315?text=Hi%20RRB%20Vacations%20Kashi%20Team,%20I'm%20interested%20in%20a%20custom%20package%20tour."
+                  href="https://wa.me/919839976261?text=Hi%20RRB%20Vacations%20Kashi%20Team,%20I'm%20interested%20in%20a%20custom%20package%20tour."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-6 py-3 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 transition duration-300"
@@ -185,7 +185,7 @@ export default function Contact() {
                 </a>
                 {/* Call Button */}
                 <a
-                  href="tel:+919415292315"
+                  href="tel:+919839976261"
                   className="inline-flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition duration-300"
                 >
                   <Phone className="mr-2 h-5 w-5" />

@@ -157,10 +157,10 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex px-8 py-4 bg-white text-orange-500 font-bold rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => window.open("tel:+919415292315")}
+              onClick={() => window.open("tel:+919839976261")}
             >
               <Phone className="h-5 w-5 mr-2" />
-              <span className="font-medium">+91 9415292315</span>
+              <span className="font-medium">+91 9839976261</span>
             </motion.button>
           </div>
         </div>

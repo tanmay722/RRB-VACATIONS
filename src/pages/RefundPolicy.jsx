@@ -85,7 +85,7 @@ export default function RefundPolicy() {
           <h2>3. Refund Process</h2>
           <p>
             To request a refund, please contact our customer service team at
-            rrbvacations@gmail.com or call +91 9415292315. Please include your
+            rrbvacations@gmail.com or call +91 9839976261. Please include your
             booking reference number and the reason for cancellation.
           </p>
 
@@ -142,7 +142,7 @@ export default function RefundPolicy() {
           <h2>9. Contact Information</h2>
           <p>
             If you have any questions about our Refund Policy, please contact us
-            at rrbvacations@gmail.com or call +91 9415292315.
+            at rrbvacations@gmail.com or call +91 9839976261.
           </p>
 
           <h2>Payment Policy</h2>

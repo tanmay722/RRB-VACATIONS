@@ -411,7 +411,7 @@ export default function PackageDetail() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => window.open("tel:+919415292315")}
+                  onClick={() => window.open("tel:+919839976261")}
                   className="w-full py-3 bg-orange-500 text-white font-bold rounded-md hover:bg-orange-600 transition-colors duration-300 mb-4"
                 >
                   <span className="flex justify-center">
