@@ -202,7 +202,7 @@ export default function Navbar() {
             <Phone className="h-5 w-5 mr-2 lg:mr-0 xl:mr-2" />
             +91
             <nbsp />
-            9839976261
+            9415292315
           </div>
 
           {/* Hamburger Menu (Mobile) */}
@@ -359,12 +359,12 @@ export default function Navbar() {
               <div
                 onClick={() => {
                   setIsOpen(false);
-                  window.open("tel:+919839976261");
+                  window.open("tel:+919415292315");
                 }}
                 className="flex items-center text-orange-500 font-medium py-2"
               >
                 <Phone className="h-5 w-5 mr-2" />
-                +91 9839976261
+                +91 9415292315
               </div>
             </div>
           </motion.div>

@@ -196,7 +196,7 @@ export default function Footer() {
                 <li className="flex items-start">
                   <Phone className="h-5 w-5 mr-3 text-orange-500 mt-1" />
                   <span className="text-gray-400">
-                    <strong>Contact:</strong> +91 9839976261 |
+                    <strong>Contact:</strong> +91 9415292315 |
                     inbound@rrbvacationskashi.com
                   </span>
                 </li>
@@ -239,7 +239,7 @@ export default function Footer() {
       </footer>
       <div className="fixed bottom-1 sm:bottom-2 right-0 sm:right-2 flex flex-col items-center space-y-2">
         <Link
-          to="https://wa.me/919839976261"
+          to="https://wa.me/919415292315"
           target="_blank"
           rel="noopener noreferrer"
           className="bg-white border border-gray-400 p-1 sm:p-2 rounded-full text-green-500 transition-colors duration-300"
