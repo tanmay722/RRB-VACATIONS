@@ -197,7 +197,7 @@ export default function Footer() {
                   <Phone className="h-5 w-5 mr-3 text-orange-500 mt-1" />
                   <span className="text-gray-400">
                     <strong>Contact:</strong> +91 9415292315 |
-                    inbound@rrbvacationskashi.com
+                    rrbvacations@gmail.com | inbound@rrbvacationskashi.com
                   </span>
                 </li>
               </ul>
