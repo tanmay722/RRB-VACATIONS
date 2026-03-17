@@ -21,4 +21,17 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+
+# Server
+server/node_modules/
+server/.env
+server/uploads/
+
+# Temporary and test scripts
+server/test-*.js
+server/migrate-*.js
+server/check-*.js
+server/create-*.js
+server/*-test.js
+server/run-all.bat
+server/direct-migrate.js

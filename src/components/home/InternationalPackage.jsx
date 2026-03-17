@@ -1,56 +1,33 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PackageCard from "../PackageCard";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Loader } from "lucide-react";
 import { Link } from "react-router-dom";
-
-import img1 from "../../assets/International/Dubai/1.jpg";
-import img2 from "../../assets/International/Nepal/1.jpg";
-import img3 from "../../assets/International/Mauritius/1.jpg";
-
-// Sample data for international packages
-const internationalPackages = [
-  {
-    id: 1,
-    title: "Dubai Adventure Tour",
-    location: "Dubai, Abu Dhabi",
-    image: img1,
-    duration: "7 Days / 6 Nights",
-    rating: 4.7,
-    category: "ADVENTURE",
-    featured: true,
-    slug: "dubai",
-  },
-  {
-    id: 2,
-    title: "Nepal Kathmandu Tour",
-    location: "Kathmandu, Pokhara",
-    image: img2,
-    duration: "6 Days / 5 Nights",
-    rating: 4.7,
-    category: "ADVENTURE",
-    featured: true,
-    slug: "nepal",
-  },
-  {
-    id: 3,
-    title: "Mauritius Island Paradise Tour",
-    location: "Mauritius",
-    image: img3,
-    duration: "7 Days / 6 Nights",
-    rating: 4.8,
-    category: "HONEYMOON",
-    featured: true,
-    slug: "mauritius",
-  },
-];
+import api from "../../services/api";
 
 const InternationalPackage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchPackages();
     setIsLoaded(true);
   }, []);
+
+  const fetchPackages = async () => {
+    try {
+      const res = await api.get("/packages?type=international");
+      const international = res.data.filter(
+        (pkg) => pkg.type === "international",
+      );
+      setPackages(international.slice(0, 3));
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching international packages:", err);
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -71,11 +48,13 @@ const InternationalPackage = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {internationalPackages
-              .filter((pkg) => pkg.featured)
-              .slice(0, 3)
-              .map((pkg, index) => (
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <Loader className="animate-spin text-teal-500 h-10 w-10" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {packages.map((pkg, index) => (
                 <motion.div
                   key={pkg.id}
                   initial={{ opacity: 0, y: 30 }}
@@ -85,7 +64,8 @@ const InternationalPackage = () => {
                   <PackageCard package={pkg} />
                 </motion.div>
               ))}
-          </div>
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Link

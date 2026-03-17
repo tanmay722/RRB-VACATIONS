@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useParams, Link } from "react-router-dom";
+
 import {
   MapPin,
   Calendar,
@@ -16,8 +17,7 @@ import {
   ChevronLeft,
   Phone,
 } from "lucide-react";
-import domesticTours from "../data/domestic-tours";
-import internationalTours from "../data/international-tours";
+import api from "../services/api";
 import importantNotes from "../data/important-notes";
 
 export default function PackageDetail() {
@@ -26,50 +26,110 @@ export default function PackageDetail() {
   const [activeTab, setActiveTab] = useState("overview");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [relatedPackages, setRelatedPackages] = useState([]);
-
-  // Combine domestic and international tours
-  const allTours = [...domesticTours, ...internationalTours];
-
-  // Fetch package data based on slug
-  const packageData = allTours.find((pkg) => pkg.slug === id);
+  const [packageData, setPackageData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchPackage();
     setIsLoaded(true);
-  }, []);
+  }, [id]);
 
-  // Generate related packages based on type
-  useEffect(() => {
-    if (packageData) {
-      // Filter packages by type, excluding current package
-      const sameTypePackages = allTours.filter(
-        (pkg) => pkg.type === packageData.type && pkg.slug !== packageData.slug,
-      );
+  const fetchPackage = async () => {
+    try {
+      setLoading(true);
+      // Fetch by slug - our backend currently only has findUnique by ID
+      // I should update the backend to find by slug or filter
+      const res = await api.get("/packages");
+      let pkg = res.data.find((p) => p.slug === id);
 
-      // Shuffle and get 3 random packages
-      const shuffled = sameTypePackages.sort(() => 0.5 - Math.random());
-      setRelatedPackages(shuffled.slice(0, 3));
+      if (pkg) {
+        // Parse JSON fields if they're strings
+        pkg = {
+          ...pkg,
+          highlights:
+            typeof pkg.highlights === "string"
+              ? JSON.parse(pkg.highlights)
+              : pkg.highlights,
+          itinerary:
+            typeof pkg.itinerary === "string"
+              ? JSON.parse(pkg.itinerary)
+              : pkg.itinerary,
+          inclusions:
+            typeof pkg.inclusions === "string"
+              ? JSON.parse(pkg.inclusions)
+              : pkg.inclusions,
+          exclusions:
+            typeof pkg.exclusions === "string"
+              ? JSON.parse(pkg.exclusions)
+              : pkg.exclusions,
+          images:
+            typeof pkg.images === "string"
+              ? JSON.parse(pkg.images)
+              : pkg.images,
+          additionalInfo:
+            typeof pkg.additionalInfo === "string"
+              ? JSON.parse(pkg.additionalInfo)
+              : pkg.additionalInfo || {},
+        };
+      }
+
+      setPackageData(pkg);
+
+      if (pkg) {
+        const related = res.data.filter(
+          (p) => p.type === pkg.type && p.slug !== pkg.slug,
+        );
+        const shuffled = related.sort(() => 0.5 - Math.random());
+        setRelatedPackages(shuffled.slice(0, 3));
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching package:", err);
+      setLoading(false);
     }
-  }, [packageData]);
+  };
+
+  const allGalleryImages = packageData
+    ? [packageData.image, ...(packageData.images || [])].filter(Boolean)
+    : [];
 
   const nextImage = () => {
     setCurrentImageIndex(
-      (prevIndex) => (prevIndex + 1) % (packageData?.images?.length || 1),
+      (prevIndex) => (prevIndex + 1) % (allGalleryImages.length || 1),
     );
   };
 
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) => {
       return (
-        (prevIndex - 1 + (packageData?.images?.length || 1)) %
-        (packageData?.images?.length || 1)
+        (prevIndex - 1 + (allGalleryImages.length || 1)) %
+        (allGalleryImages.length || 1)
       );
     });
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 flex flex-col items-center justify-center">
+        <div className="h-12 w-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-600">Loading package details...</p>
+      </div>
+    );
+  }
+
   if (!packageData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-2xl font-bold">Package not found</h1>
+      <div className="min-h-screen flex items-center justify-center pt-20">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">404</h1>
+          <h2 className="text-2xl font-semibold mb-6">Package not found</h2>
+          <Link
+            to="/packages"
+            className="px-6 py-2 bg-orange-500 text-white rounded-md"
+          >
+            View All Packages
+          </Link>
+        </div>
       </div>
     );
   }
@@ -80,7 +140,11 @@ export default function PackageDetail() {
       <section className="relative h-[50vh]">
         <div className="absolute inset-0">
           <img
-            src={packageData.image || "/placeholder.svg"}
+            src={
+              packageData.image && packageData.image.startsWith("/uploads")
+                ? `http://localhost:5000${packageData.image}`
+                : packageData.image || "/placeholder.svg"
+            }
             alt={packageData.title}
             className="object-cover w-full h-full"
           />
@@ -290,8 +354,13 @@ export default function PackageDetail() {
                       <div className="relative h-[400px] w-full rounded-lg overflow-hidden">
                         <img
                           src={
-                            packageData.images[currentImageIndex] ||
-                            "/placeholder.svg"
+                            allGalleryImages[currentImageIndex] &&
+                            allGalleryImages[currentImageIndex].startsWith(
+                              "/uploads",
+                            )
+                              ? `http://localhost:5000${allGalleryImages[currentImageIndex]}`
+                              : allGalleryImages[currentImageIndex] ||
+                                "/placeholder.svg"
                           }
                           alt={`${packageData.title} - Image ${
                             currentImageIndex + 1
@@ -318,7 +387,7 @@ export default function PackageDetail() {
                     </div>
 
                     <div className="grid grid-cols-5 gap-2">
-                      {packageData.images.map((image, index) => (
+                      {allGalleryImages.map((image, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentImageIndex(index)}
@@ -329,7 +398,11 @@ export default function PackageDetail() {
                           }`}
                         >
                           <img
-                            src={image || "/placeholder.svg"}
+                            src={
+                              image && image.startsWith("/uploads")
+                                ? `http://localhost:5000${image}`
+                                : image || "/placeholder.svg"
+                            }
                             alt={`${packageData.title} - Thumbnail ${
                               index + 1
                             }`}
@@ -448,7 +521,11 @@ export default function PackageDetail() {
                 <div className="bg-white rounded-lg overflow-hidden shadow-md">
                   <div className="relative h-48 w-full">
                     <img
-                      src={pkg.image || "/placeholder.svg"}
+                      src={
+                        pkg.image && pkg.image.startsWith("/uploads")
+                          ? `http://localhost:5000${pkg.image}`
+                          : pkg.image || "/placeholder.svg"
+                      }
                       alt={pkg.title}
                       className="object-cover w-full h-full"
                     />

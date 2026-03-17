@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
-// import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
+import { motion } from "framer-motion";
 
-import img1 from "../assets/Domestic/Varanasi/1.jpg";
-import img2 from "../assets/Domestic/Rajasthan/1.jpg";
-import img3 from "../assets/Domestic/Mysore/1.jpg";
-import img4 from "../assets/Domestic/Goa/1.jpg";
-import img5 from "../assets/International/Dubai/1.jpg";
-import img6 from "../assets/International/Mauritius/1.jpg";
-import img7 from "../assets/International/Nepal/1.jpg";
-import img8 from "../assets/International/Bali/1.jpg";
+import img1 from "../assets/FeaturedDestination/Varanasi.jpg";
+import img2 from "../assets/FeaturedDestination/Rajasthan.jpg";
+import img3 from "../assets/FeaturedDestination/Mysore.jpg";
+import img4 from "../assets/FeaturedDestination/Goa.jpg";
+import img5 from "../assets/FeaturedDestination/Dubai.jpg";
+import img6 from "../assets/FeaturedDestination/Mauritius.jpg";
+import img7 from "../assets/FeaturedDestination/Nepal.jpg";
+import img8 from "../assets/FeaturedDestination/Bali.jpg";
 
 const destinations = [
   {

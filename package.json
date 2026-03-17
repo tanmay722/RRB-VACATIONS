@@ -7,16 +7,20 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup-db": "npm install fs-extra && node copy-assets.js && cd server && npm install && npx prisma db push --accept-data-loss && node direct-migrate.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.3",
-    "framer-motion": "^12.11.0",
+    "axios": "^1.13.6",
+    "framer-motion": "^12.36.0",
+    "fs-extra": "^11.2.0",
     "lucide-react": "^0.510.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.6.0",
+    "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.3"
   },
   "devDependencies": {

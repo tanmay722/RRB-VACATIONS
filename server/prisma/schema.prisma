@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Package {
+  id             Int       @id @default(autoincrement())
+  title          String
+  subtitle       String?
+  location       String
+  image          String
+  duration       String
+  rating         Int       @default(5)
+  reviews        Int       @default(0)
+  category       String
+  type           String
+  slug           String    @unique
+  overview       String
+  highlights     Json
+  itinerary      Json
+  inclusions     Json
+  exclusions     Json
+  images         Json
+  additionalInfo Json?
+  createdAt      DateTime? @default(now())
+  updatedAt      DateTime? @updatedAt
+
+  @@map("package")
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+
+  @@map("admin")
+}

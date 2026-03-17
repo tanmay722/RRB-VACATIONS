@@ -1,59 +1,32 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PackageCard from "../PackageCard";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Loader } from "lucide-react";
 import { Link } from "react-router-dom";
-
-import img1 from "../../assets/Domestic/Varanasi/1.jpg";
-import img2 from "../../assets/Domestic/Darjeeling/1.jpg";
-import img3 from "../../assets/Domestic/Rajasthan/1.jpg";
-
-// Sample data for domestic packages
-const domesticPackages = [
-  {
-    id: 1,
-    title: "Kashi Tour Package",
-    location: "Varanasi",
-    image: img1,
-    duration: "3 Days / 2 Nights",
-    price: "₹12,999",
-    rating: 4.8,
-    category: "RELIGIOUS",
-    featured: true,
-    slug: "kashi",
-  },
-  {
-    id: 2,
-    title: "Darjeeling Gangtok Tour",
-    location: "West Bengal, Sikkim",
-    image: img2,
-    duration: "6 Days / 5 Nights",
-    price: "₹28,999",
-    rating: 4.9,
-    category: "ADVENTURE",
-    featured: true,
-    slug: "darjeeling-gangtok",
-  },
-  {
-    id: 3,
-    title: "Rajasthan Honeymoon Tour",
-    location: "Jaipur, Udaipur, Jodhpur",
-    image: img3,
-    duration: "6 Days / 5 Nights",
-    price: "₹32,999",
-    rating: 4.9,
-    category: "HONEYMOON",
-    featured: true,
-    slug: "rajasthan",
-  },
-];
+import api from "../../services/api";
 
 const DomesticPackage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchPackages();
     setIsLoaded(true);
   }, []);
+
+  const fetchPackages = async () => {
+    try {
+      const res = await api.get("/packages?type=domestic");
+      // Our backend handles filtering if we add it, but for now we filter here
+      const domestic = res.data.filter((pkg) => pkg.type === "domestic");
+      setPackages(domestic.slice(0, 3));
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching domestic packages:", err);
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -74,11 +47,13 @@ const DomesticPackage = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {domesticPackages
-              .filter((pkg) => pkg.featured)
-              .slice(0, 3)
-              .map((pkg, index) => (
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <Loader className="animate-spin text-orange-500 h-10 w-10" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {packages.map((pkg, index) => (
                 <motion.div
                   key={pkg.id}
                   initial={{ opacity: 0, y: 30 }}
@@ -88,7 +63,8 @@ const DomesticPackage = () => {
                   <PackageCard package={pkg} />
                 </motion.div>
               ))}
-          </div>
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Link

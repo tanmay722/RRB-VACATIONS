@@ -10,10 +10,18 @@ export default function PackageCard({ package: pkg }) {
     >
       <div className="relative h-48 w-full">
         <img
-          src={pkg.image || "/placeholder.svg"}
+          src={
+            pkg.image && pkg.image.startsWith("/uploads")
+              ? `http://localhost:5000${pkg.image}`
+              : pkg.image || "/placeholder.svg"
+          }
           alt={pkg.title}
           className="object-cover h-full w-full"
+          onError={(e) => {
+            e.target.src = "https://placehold.co/150";
+          }}
         />
+
         <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
           {pkg.category}
         </div>

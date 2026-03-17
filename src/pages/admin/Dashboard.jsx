@@ -1,323 +1,357 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Package, Users, MessageSquare, Map } from "lucide-react";
-import { Link } from "react-router-dom";
-import { getAllTours } from "../../data";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import api from "../../services/api";
+import { toast } from "react-toastify";
 import {
-  tourFormSubmissions,
-  customTourFormSubmissions,
-  newsletterSubscriptions,
-} from "../../data/forms";
+  Plus,
+  Edit,
+  Trash2,
+  LogOut,
+  Package as PackageIcon,
+  Settings,
+  X,
+  Home,
+  Menu,
+} from "lucide-react";
 
-export default function AdminDashboard() {
-  const [stats, setStats] = useState({
-    totalTours: 0,
-    totalInquiries: 0,
-    totalCustomRequests: 0,
-    totalSubscribers: 0,
+const Dashboard = () => {
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { admin, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [creds, setCreds] = useState({
+    currentPassword: "",
+    newUsername: "",
+    newPassword: "",
   });
 
-  const [recentInquiries, setRecentInquiries] = useState([]);
-  const [popularTours, setPopularTours] = useState([]);
+  const handleUpdateCredentials = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put("/auth/change-credentials", creds);
+      toast.success("Credentials updated successfully");
+      setShowSettings(false);
+      setCreds({ currentPassword: "", newUsername: "", newPassword: "" });
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "Failed to update credentials");
+    }
+  };
 
   useEffect(() => {
-    // Calculate stats
-    const tours = getAllTours();
-    const inquiries = tourFormSubmissions;
-    const customRequests = customTourFormSubmissions;
-    const subscribers = newsletterSubscriptions.filter(
-      (sub) => sub.status === "Active"
+    if (!admin) {
+      navigate("/admin/login");
+      return;
+    }
+    fetchPackages();
+  }, [admin]);
+
+  const fetchPackages = async () => {
+    try {
+      const res = await api.get("/packages");
+      setPackages(res.data);
+      setLoading(false);
+    } catch (err) {
+      toast.error("Failed to fetch packages");
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this package?")) {
+      try {
+        await api.delete(`/packages/${id}`);
+        toast.success("Package deleted successfully");
+        setPackages(packages.filter((pkg) => pkg.id !== id));
+      } catch (err) {
+        toast.error("Failed to delete package");
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/admin/login");
+  };
+
+  if (loading)
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
     );
 
-    setStats({
-      totalTours: tours.length,
-      totalInquiries: inquiries.length,
-      totalCustomRequests: customRequests.length,
-      totalSubscribers: subscribers.length,
-    });
-
-    // Get recent inquiries
-    const recent = [...inquiries]
-      .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt))
-      .slice(0, 5);
-    setRecentInquiries(recent);
-
-    // Get popular tours based on ratings and reviews
-    const popular = [...tours]
-      .sort((a, b) => b.rating * b.reviews - a.rating * a.reviews)
-      .slice(0, 5);
-    setPopularTours(popular);
-  }, []);
-
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-gray-600">Welcome to your admin dashboard</p>
-      </div>
+    <div className="h-screen bg-gray-950 text-white flex overflow-hidden">
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white rounded-lg shadow p-6"
-        >
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-              <Package size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Tours</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {stats.totalTours}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="bg-white rounded-lg shadow p-6"
-        >
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-              <MessageSquare size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Tour Inquiries</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {stats.totalInquiries}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          className="bg-white rounded-lg shadow p-6"
-        >
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-              <Map size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Custom Requests</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {stats.totalCustomRequests}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-          className="bg-white rounded-lg shadow p-6"
-        >
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
-              <Users size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Subscribers</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {stats.totalSubscribers}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Recent Inquiries and Popular Tours */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-lg shadow"
-        >
-          <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Recent Inquiries
-            </h2>
-          </div>
-          <div className="p-6">
-            {recentInquiries.length > 0 ? (
-              <div className="space-y-4">
-                {recentInquiries.map((inquiry) => (
-                  <div key={inquiry.id} className="flex items-start">
-                    <div
-                      className={`w-2 h-2 mt-2 rounded-full mr-3 ${
-                        inquiry.status === "New"
-                          ? "bg-blue-500"
-                          : inquiry.status === "Contacted"
-                          ? "bg-yellow-500"
-                          : "bg-green-500"
-                      }`}
-                    ></div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <p className="font-medium text-gray-800">
-                          {inquiry.name}
-                        </p>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            inquiry.status === "New"
-                              ? "bg-blue-100 text-blue-800"
-                              : inquiry.status === "Contacted"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
-                          {inquiry.status}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {inquiry.packageName}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {new Date(inquiry.submittedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-center py-4">
-                No recent inquiries
-              </p>
-            )}
-            <div className="mt-4 text-center">
-              <Link
-                to="/admin/tour-forms"
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                View all inquiries
-              </Link>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-lg shadow"
-        >
-          <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Popular Tours
-            </h2>
-          </div>
-          <div className="p-6">
-            {popularTours.length > 0 ? (
-              <div className="space-y-4">
-                {popularTours.map((tour) => (
-                  <div key={tour.id} className="flex items-center">
-                    <div className="w-12 h-12 rounded-md overflow-hidden mr-4">
-                      <img
-                        src={tour.image || "/placeholder.svg"}
-                        alt={tour.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-800">{tour.title}</p>
-                      <div className="flex items-center text-sm">
-                        <span className="text-yellow-500 mr-1">★</span>
-                        <span className="text-gray-600">{tour.rating}</span>
-                        <span className="mx-2 text-gray-400">|</span>
-                        <span className="text-gray-600">
-                          {tour.reviews} reviews
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      {/* <p className="font-bold text-blue-600">{tour.price}</p> */}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-center py-4">
-                No tours available
-              </p>
-            )}
-            <div className="mt-4 text-center">
-              <Link
-                to="/admin/tours"
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                View all tours
-              </Link>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white rounded-lg shadow mb-8"
+      {/* Sidebar */}
+      <aside 
+        className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-900 border-r border-gray-800 p-6 flex flex-col transform transition-transform duration-300 ease-in-out h-full ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
       >
-        <div className="p-6 border-b">
-          <h2 className="text-lg font-semibold text-gray-800">Quick Actions</h2>
+        <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded-lg">
+              <PackageIcon size={24} className="text-white" />
+            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              RRB Admin
+            </h1>
+          </div>
+          <button 
+            className="md:hidden text-gray-400 hover:text-white"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <X size={24} />
+          </button>
         </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link
-              to="/admin/add-tour"
-              className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-            >
-              <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
-                <Package size={20} />
-              </div>
-              <span className="font-medium text-blue-800">Add New Tour</span>
-            </Link>
 
-            <Link
-              to="/admin/tour-forms"
-              className="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
-            >
-              <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3">
-                <MessageSquare size={20} />
-              </div>
-              <span className="font-medium text-green-800">View Inquiries</span>
-            </Link>
+        <nav className="flex-1 space-y-2 overflow-y-auto pr-2">
+          <Link
+            to="/admin/dashboard"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 bg-blue-600/10 text-blue-400 rounded-lg border border-blue-600/20"
+          >
+            <Home size={20} />
+            <span>Dashboard</span>
+          </Link>
+          <Link
+            to="/admin/package/new"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-colors group"
+          >
+            <Plus
+              size={20}
+              className="group-hover:text-blue-400 transition-colors"
+            />
+            <span>Add Package</span>
+          </Link>
+        </nav>
 
-            <Link
-              to="/admin/custom-tour-forms"
-              className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
-            >
-              <div className="p-2 rounded-full bg-purple-100 text-purple-600 mr-3">
-                <Map size={20} />
-              </div>
-              <span className="font-medium text-purple-800">
-                Custom Requests
-              </span>
-            </Link>
+        <div className="mt-auto pt-4 border-t border-gray-800">
+          <button
+            onClick={() => {
+              setShowSettings(true);
+              setMobileMenuOpen(false);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors mb-2"
+          >
+            <Settings size={20} />
+            <span>Settings</span>
+          </button>
 
-            <Link
-              to="/admin/newsletter"
-              className="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+          >
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="flex justify-between items-center p-4 md:p-8 shrink-0 mb-4 md:mb-10">
+          <div className="flex items-center gap-4">
+            <button 
+              className="md:hidden text-gray-400 hover:text-white p-2 rounded-lg bg-gray-800 border border-gray-700"
+              onClick={() => setMobileMenuOpen(true)}
             >
-              <div className="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-3">
-                <Users size={20} />
-              </div>
-              <span className="font-medium text-yellow-800">Subscribers</span>
-            </Link>
+              <Menu size={20} />
+            </button>
+            <div>
+              <h2 className="text-xl md:text-3xl font-bold">Tour Packages</h2>
+              <p className="text-gray-400 mt-1 hidden sm:block text-sm md:text-base">
+                Manage your website's domestic and international tours
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/admin/package/new"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all shadow-lg shadow-blue-600/20"
+          >
+            <Plus size={20} />
+            <span className="hidden sm:inline">Add New Package</span>
+            <span className="sm:hidden">Add</span>
+          </Link>
+        </header>
+
+        <div className="flex-1 overflow-y-auto px-4 md:px-8 pb-8">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-xl overflow-x-auto">
+            <div className="min-w-[800px]">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-800/50 border-b border-gray-800">
+                  <th className="px-6 py-4 font-semibold text-gray-300">
+                    Package Details
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-gray-300">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-gray-300">
+                    Type
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-gray-300">
+                    Duration
+                  </th>
+                  <th className="px-6 py-4 font-semibold text-gray-300 text-right">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                {packages.map((pkg) => (
+                  <tr
+                    key={pkg.id}
+                    className="hover:bg-gray-800/30 transition-colors"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        {/* Replace image path if needed for display */}
+                        <div className="w-12 h-12 rounded-lg bg-gray-800 overflow-hidden shrink-0 border border-gray-700">
+                          <img
+                            src={
+                              pkg.image && pkg.image.startsWith("/uploads")
+                                ? `http://localhost:5000${pkg.image}`
+                                : pkg.image || "https://placehold.co/150"
+                            }
+                            alt={pkg.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = "https://placehold.co/150";
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <div className="font-bold text-white">
+                            {pkg.title}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {pkg.location}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-300">
+                      <span className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-400 border border-gray-700">
+                        {pkg.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-semibold ${
+                          pkg.type === "domestic"
+                            ? "bg-green-600/10 text-green-400 border border-green-600/20"
+                            : "bg-purple-600/10 text-purple-400 border border-purple-600/20"
+                        }`}
+                      >
+                        {pkg.type.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-400">{pkg.duration}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-3 text-right">
+                        <Link
+                          to={`/admin/package/edit/${pkg.id}`}
+                          className="p-2 hover:bg-blue-600/10 text-gray-400 hover:text-blue-400 rounded-lg transition-colors border border-transparent hover:border-blue-600/20"
+                        >
+                          <Edit size={18} />
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(pkg.id)}
+                          className="p-2 hover:bg-red-600/10 text-gray-400 hover:text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-600/20"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            </div>
           </div>
         </div>
-      </motion.div>
+      </main>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 w-full max-w-md relative shadow-2xl">
+            <button
+              onClick={() => setShowSettings(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+            <h2 className="text-2xl font-bold mb-6 text-white">
+              Admin Settings
+            </h2>
+            <form onSubmit={handleUpdateCredentials} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  Current Password (Required)
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={creds.currentPassword}
+                  onChange={(e) =>
+                    setCreds({ ...creds, currentPassword: e.target.value })
+                  }
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  New Username (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={creds.newUsername}
+                  onChange={(e) =>
+                    setCreds({ ...creds, newUsername: e.target.value })
+                  }
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  New Password (Optional)
+                </label>
+                <input
+                  type="password"
+                  value={creds.newPassword}
+                  onChange={(e) =>
+                    setCreds({ ...creds, newPassword: e.target.value })
+                  }
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4"
+              >
+                Update Credentials
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default Dashboard;

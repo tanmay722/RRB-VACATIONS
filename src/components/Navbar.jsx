@@ -4,74 +4,39 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 
-const domesticPackages = [
-  { name: "Kashi Tour Packages", href: "/packages/kashi" },
-  {
-    name: "Shri Krishna Janmasthan Temple Tour",
-    href: "/packages/shri-krishna-janmasthan",
-  },
-  {
-    name: "Kashi Prayagraj Gaya Dham Yatra",
-    href: "/packages/kashi-prayagraj-gaya",
-  },
-  {
-    name: "Kashi Gaya Ayodhya Lucknow Tour",
-    href: "/packages/kashi-gaya-ayodhya-lucknow",
-  },
-  { name: "Kashi Gaya Patna Tour", href: "/packages/kashi-gaya-patna" },
-  { name: "Gaya Pind Dan Yatra", href: "/packages/pind-daan" },
-  {
-    name: "Kashi Prayagraj Ayodhya Naimisharnya Lucknow Tour",
-    href: "/packages/kashi-prayagraj-ayodhya-lucknow",
-  },
-  {
-    name: "Kashi Ayodhya Prayagraj Chitrakoot Adhyatma Yatra",
-    href: "/packages/kashi-ayodhya-prayagraj-chitrakoot",
-  },
-  {
-    name: "Kashi Prayagraj Gaya Patna Tour",
-    href: "/packages/kashi-prayagraj-gaya-patna",
-  },
-  {
-    name: "Kashi Gaya Kushinagar Lumbini Nepal Tour",
-    href: "/packages/kashi-gaya-kushinagar-lumbini-nepal",
-  },
-  {
-    name: "Pashupati Nath Ji Kathmandu Darshan with Kashi Lumbini Yatra",
-    href: "/packages/kathmandu-kashi-lumbini",
-  },
-  {
-    name: "Shimla Kufri Manali Tour Packages",
-    href: "/packages/shimla-manali",
-  },
-  {
-    name: "Buddhist Temple Tour Packages Bodhgaya",
-    href: "/packages/buddhist-temple",
-  },
-  { name: "Ayodhya Temple Tour Packages", href: "/packages/ayodhya" },
-  { name: "Andaman Honeymoon Package", href: "/packages/andaman" },
-  { name: "Darjeeling Gangtok Tour", href: "/packages/darjeeling-gangtok" },
-  { name: "Goa Honeymoon Tour Packages", href: "/packages/goa" },
-  { name: "Kashmir Honeymoon Tour Packages", href: "/packages/kashmir" },
-  { name: "Kerala Mysore Tour", href: "/packages/kerala-mysore" },
-  { name: "Leh Ladakh Tour", href: "/packages/leh-ladakh" },
-  { name: "Rajasthan Honeymoon Tour", href: "/packages/rajasthan" },
-];
-
-const internationalPackages = [
-  { name: "Bali Paradise Tour ", href: "/packages/bali-paradise" },
-  { name: "Dubai Adventure Tour ", href: "/packages/dubai" },
-  { name: "Nepal Kathmandu Tour ", href: "/packages/nepal" },
-  { name: "Mauritius Island Paradise Tour ", href: "/packages/mauritius" },
-];
+import api from "../services/api";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [domesticPackages, setDomesticPackages] = useState([]);
+  const [internationalPackages, setInternationalPackages] = useState([]);
   const [activeDomesticDropdown, setActiveDomesticDropdown] = useState(false);
   const [activeInternationalDropdown, setActiveInternationalDropdown] =
     useState(false);
   const navRef = useRef();
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const res = await api.get("/packages");
+        const packages = res.data;
+        setDomesticPackages(
+          packages
+            .filter((p) => p.type === "domestic")
+            .map((p) => ({ name: p.title, href: `/packages/${p.slug}` })),
+        );
+        setInternationalPackages(
+          packages
+            .filter((p) => p.type === "international")
+            .map((p) => ({ name: p.title, href: `/packages/${p.slug}` })),
+        );
+      } catch (err) {
+        console.error("Error fetching navbar packages:", err);
+      }
+    };
+    fetchTours();
+  }, []);
 
   // 🔒 Prevent background scroll on mobile menu open
   useEffect(() => {
@@ -200,9 +165,7 @@ export default function Navbar() {
           {/* Phone Contact (Desktop Only) */}
           <div className="hidden lg:flex items-center text-orange-500 font-semibold">
             <Phone className="h-5 w-5 mr-2 lg:mr-0 xl:mr-2" />
-            +91
-            <nbsp />
-            9415292315
+            +91 9415292315
           </div>
 
           {/* Hamburger Menu (Mobile) */}

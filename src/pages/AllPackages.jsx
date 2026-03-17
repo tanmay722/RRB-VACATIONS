@@ -1,15 +1,10 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Search, Filter } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Filter, Loader } from "lucide-react";
 import PackageCard from "../components/PackageCard";
-import domesticTours from "../data/domestic-tours";
-import internationalTours from "../data/international-tours";
-import { useLocation } from "react-router-dom";
-
-import img1 from "../assets/International/Dubai/1.jpg";
-
-// Combine all packages from both sources
-const allPackages = [...domesticTours, ...internationalTours];
+import api from "../services/api";
+import { useLocation, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import img1 from "../assets/FeaturedDestination/Nepal.jpg";
 
 export default function AllPackages() {
   const location = useLocation();
@@ -21,11 +16,29 @@ export default function AllPackages() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState(initialType);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filteredPackages, setFilteredPackages] = useState(allPackages);
+  const [allPackages, setAllPackages] = useState([]);
+  const [filteredPackages, setFilteredPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchPackages();
     setIsLoaded(true);
   }, []);
+
+  const fetchPackages = async () => {
+    try {
+      const res = await api.get("/packages");
+      const data = Array.isArray(res.data) ? res.data : [];
+      setAllPackages(data);
+      setFilteredPackages(data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching packages:", err);
+      setAllPackages([]);
+      setFilteredPackages([]);
+      setLoading(false);
+    }
+  };
 
   // Update filter if URL changes (e.g., user navigates with query param)
   useEffect(() => {
@@ -35,7 +48,7 @@ export default function AllPackages() {
   }, [location.search]);
 
   useEffect(() => {
-    let filtered = allPackages;
+    let filtered = Array.isArray(allPackages) ? allPackages : [];
 
     // Filter by search term
     if (searchTerm) {
@@ -57,7 +70,7 @@ export default function AllPackages() {
     }
 
     setFilteredPackages(filtered);
-  }, [searchTerm, selectedType, selectedCategory]);
+  }, [searchTerm, selectedType, selectedCategory, allPackages]);
 
   return (
     <div className="min-h-screen pt-20">
@@ -154,40 +167,49 @@ export default function AllPackages() {
       {/* Packages Grid */}
       <section className="py-16 px-4 md:px-8 lg:px-16 bg-gray-50">
         <div className="container mx-auto">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold">
-              {filteredPackages.length}{" "}
-              {selectedType !== "all"
-                ? selectedType === "domestic"
-                  ? "Domestic"
-                  : "International"
-                : ""}{" "}
-              Tour Packages Found
-            </h2>
-          </div>
-
-          {filteredPackages.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredPackages.map((pkg, index) => (
-                <motion.div
-                  key={pkg.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <PackageCard package={pkg} />
-                </motion.div>
-              ))}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader className="h-12 w-12 text-orange-500 animate-spin mb-4" />
+              <p className="text-gray-600">Loading amazing tour packages...</p>
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-5xl mb-4">😕</div>
-              <h3 className="text-2xl font-bold mb-2">No Packages Found</h3>
-              <p className="text-gray-600 max-w-md mx-auto">
-                We couldn't find any packages matching your search criteria.
-                Please try different filters or search terms.
-              </p>
-            </div>
+            <>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold">
+                  {filteredPackages.length}{" "}
+                  {selectedType !== "all"
+                    ? selectedType === "domestic"
+                      ? "Domestic"
+                      : "International"
+                    : ""}{" "}
+                  Tour Packages Found
+                </h2>
+              </div>
+
+              {filteredPackages.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {filteredPackages.map((pkg, index) => (
+                    <motion.div
+                      key={pkg.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                      transition={{ duration: 0.5, delay: index * 0.05 }}
+                    >
+                      <PackageCard package={pkg} />
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16">
+                  <div className="text-5xl mb-4">😕</div>
+                  <h3 className="text-2xl font-bold mb-2">No Packages Found</h3>
+                  <p className="text-gray-600 max-w-md mx-auto">
+                    We couldn't find any packages matching your search criteria.
+                    Please try different filters or search terms.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
