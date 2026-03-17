@@ -216,13 +216,18 @@ const PackageForm = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      if (isEdit) {
-        await api.put(`/packages/${id}`, formData);
-        toast.success("Package updated successfully");
-      } else {
-        await api.post("/packages", formData);
-        toast.success("Package added successfully");
-      }
+        const submissionData = {
+          ...formData,
+          rating: !isNaN(Number(formData.rating)) ? Math.round(Number(formData.rating)) : 5,
+          reviews: !isNaN(Number(formData.reviews)) ? Math.round(Number(formData.reviews)) : 0
+        };
+        if (isEdit) {
+          await api.put(`/packages/${id}`, submissionData);
+          toast.success("Package updated successfully");
+        } else {
+          await api.post("/packages", submissionData);
+          toast.success("Package added successfully");
+        }
       navigate("/admin/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.error || "Error saving package");
@@ -475,7 +480,7 @@ const PackageForm = () => {
                     <div className="relative group rounded-3xl overflow-hidden aspect-video bg-gray-950 border border-white/10 flex items-center justify-center">
                       {formData.image ? (
                         <img
-                          src={formData.image.startsWith("/uploads") ? `http://localhost:5000${formData.image}` : formData.image}
+                          src={formData.image}
                           alt="Hero"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
@@ -516,8 +521,8 @@ const PackageForm = () => {
                             exit={{ scale: 0.8, opacity: 0 }}
                             className="relative group aspect-square rounded-2xl overflow-hidden border border-white/10"
                           >
-                            <img
-                              src={imgUrl.startsWith("/uploads") ? `http://localhost:5000${imgUrl}` : imgUrl}
+                             <img
+                              src={imgUrl}
                               alt="Gallery"
                               className="w-full h-full object-cover"
                             />

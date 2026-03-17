@@ -10,11 +10,7 @@ export default function PackageCard({ package: pkg }) {
     >
       <div className="relative h-48 w-full">
         <img
-          src={
-            pkg.image && pkg.image.startsWith("/uploads")
-              ? `http://localhost:5000${pkg.image}`
-              : pkg.image || "/placeholder.svg"
-          }
+          src={pkg.image || "/placeholder.svg"}
           alt={pkg.title}
           className="object-cover h-full w-full"
           onError={(e) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 
@@ -29,21 +29,13 @@ export default function PackageDetail() {
   const [packageData, setPackageData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPackage();
-    setIsLoaded(true);
-  }, [id]);
-
-  const fetchPackage = async () => {
+  const fetchPackage = React.useCallback(async () => {
     try {
       setLoading(true);
-      // Fetch by slug - our backend currently only has findUnique by ID
-      // I should update the backend to find by slug or filter
       const res = await api.get("/packages");
       let pkg = res.data.find((p) => p.slug === id);
 
       if (pkg) {
-        // Parse JSON fields if they're strings
         pkg = {
           ...pkg,
           highlights:
@@ -87,7 +79,12 @@ export default function PackageDetail() {
       console.error("Error fetching package:", err);
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchPackage();
+    setIsLoaded(true);
+  }, [fetchPackage]);
 
   const allGalleryImages = packageData
     ? [packageData.image, ...(packageData.images || [])].filter(Boolean)
@@ -140,11 +137,7 @@ export default function PackageDetail() {
       <section className="relative h-[50vh]">
         <div className="absolute inset-0">
           <img
-            src={
-              packageData.image && packageData.image.startsWith("/uploads")
-                ? `http://localhost:5000${packageData.image}`
-                : packageData.image || "/placeholder.svg"
-            }
+            src={packageData.image || "/placeholder.svg"}
             alt={packageData.title}
             className="object-cover w-full h-full"
           />
@@ -354,13 +347,8 @@ export default function PackageDetail() {
                       <div className="relative h-[400px] w-full rounded-lg overflow-hidden">
                         <img
                           src={
-                            allGalleryImages[currentImageIndex] &&
-                            allGalleryImages[currentImageIndex].startsWith(
-                              "/uploads",
-                            )
-                              ? `http://localhost:5000${allGalleryImages[currentImageIndex]}`
-                              : allGalleryImages[currentImageIndex] ||
-                                "/placeholder.svg"
+                            allGalleryImages[currentImageIndex] ||
+                            "/placeholder.svg"
                           }
                           alt={`${packageData.title} - Image ${
                             currentImageIndex + 1
@@ -398,11 +386,7 @@ export default function PackageDetail() {
                           }`}
                         >
                           <img
-                            src={
-                              image && image.startsWith("/uploads")
-                                ? `http://localhost:5000${image}`
-                                : image || "/placeholder.svg"
-                            }
+                            src={image || "/placeholder.svg"}
                             alt={`${packageData.title} - Thumbnail ${
                               index + 1
                             }`}
@@ -521,11 +505,7 @@ export default function PackageDetail() {
                 <div className="bg-white rounded-lg overflow-hidden shadow-md">
                   <div className="relative h-48 w-full">
                     <img
-                      src={
-                        pkg.image && pkg.image.startsWith("/uploads")
-                          ? `http://localhost:5000${pkg.image}`
-                          : pkg.image || "/placeholder.svg"
-                      }
+                      src={pkg.image || "/placeholder.svg"}
                       alt={pkg.title}
                       className="object-cover w-full h-full"
                     />

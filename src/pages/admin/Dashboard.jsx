@@ -222,11 +222,7 @@ const Dashboard = () => {
                         {/* Replace image path if needed for display */}
                         <div className="w-12 h-12 rounded-lg bg-gray-800 overflow-hidden shrink-0 border border-gray-700">
                           <img
-                            src={
-                              pkg.image && pkg.image.startsWith("/uploads")
-                                ? `http://localhost:5000${pkg.image}`
-                                : pkg.image || "https://placehold.co/150"
-                            }
+                            src={pkg.image || "https://placehold.co/150"}
                             alt={pkg.title}
                             className="w-full h-full object-cover"
                             onError={(e) => {
