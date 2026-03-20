@@ -5,7 +5,6 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
 import process from "process";
 
@@ -41,14 +40,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Cloudinary storage configuration
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "rrb_vacations",
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
-  },
-});
+// Multer with memory storage
+const storage = multer.memoryStorage();
 
 const uploadMainImage = multer({
   storage,
@@ -59,6 +52,20 @@ const uploadGalleryImages = multer({
   storage,
   limits: { fileSize: 500 * 1024 }, // 500 KB
 });
+
+// Helper for 'modern' Cloudinary upload
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: "rrb_vacations" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+};
 
 const getPublicIdFromUrl = (url) => {
   if (!url || !url.includes("cloudinary.com")) return null;
@@ -291,7 +298,7 @@ router.delete("/:id", auth, async (req, res) => {
 // @desc     Upload an image
 // @access   Private (Admin)
 router.post("/upload", auth, (req, res) => {
-  uploadMainImage.single("image")(req, res, function (err) {
+  uploadMainImage.single("image")(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       if (err.code === "LIMIT_FILE_SIZE") {
         return res
@@ -304,7 +311,13 @@ router.post("/upload", auth, (req, res) => {
     }
     if (!req.file) return res.status(400).json({ msg: "No file provided" });
 
-    res.json({ url: req.file.path });
+    try {
+      const result = await uploadToCloudinary(req.file.buffer);
+      res.json({ url: result.secure_url });
+    } catch (uploadErr) {
+      console.error("Cloudinary upload error:", uploadErr);
+      res.status(500).json({ msg: "Cloudinary upload failed", error: uploadErr.message });
+    }
   });
 });
 
@@ -312,7 +325,7 @@ router.post("/upload", auth, (req, res) => {
 // @desc     Upload gallery images
 // @access   Private (Admin)
 router.post("/upload/gallery", auth, (req, res) => {
-  uploadGalleryImages.array("images", 3)(req, res, function (err) {
+  uploadGalleryImages.array("images", 3)(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       if (err.code === "LIMIT_FILE_SIZE") {
         return res
@@ -326,8 +339,15 @@ router.post("/upload/gallery", auth, (req, res) => {
     if (!req.files || req.files.length === 0)
       return res.status(400).json({ msg: "No files provided" });
 
-    const urls = req.files.map((file) => file.path);
-    res.json({ urls });
+    try {
+      const uploadPromises = req.files.map((file) => uploadToCloudinary(file.buffer));
+      const results = await Promise.all(uploadPromises);
+      const urls = results.map((res) => res.secure_url);
+      res.json({ urls });
+    } catch (uploadErr) {
+      console.error("Cloudinary gallery upload error:", uploadErr);
+      res.status(500).json({ msg: "Cloudinary upload failed", error: uploadErr.message });
+    }
   });
 });
 
