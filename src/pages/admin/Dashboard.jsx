@@ -33,9 +33,13 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       await api.put("/auth/change-credentials", creds);
-      toast.success("Credentials updated successfully");
+      toast.success("Credentials updated. Please sign in again.");
       setShowSettings(false);
       setCreds({ currentPassword: "", newUsername: "", newPassword: "" });
+      // Force a fresh login so the admin immediately uses the new credentials
+      // (and any old token is cleared).
+      logout();
+      navigate("/admin/login");
     } catch (err) {
       toast.error(err.response?.data?.msg || "Failed to update credentials");
     }

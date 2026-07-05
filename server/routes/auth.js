@@ -57,15 +57,18 @@ router.put("/change-credentials", auth, async (req, res) => {
   const { currentPassword, newUsername, newPassword } = req.body;
 
   try {
-    const adminId = req.user?.id || req.admin?.id; // depending on how auth middleware sets it length
-    // Wait, let's verify how auth middleware sets it. Usually req.admin = decoded.admin.
-    // I should check `middleware/auth.js` but let me use a generic fetch if ID is available, or just fetch the first admin since it's a single admin setup. Wait, auth middleware decoding will give req.admin.id.
-    // Let me check req.admin?.id
-    
-    // Instead of querying by ID from middleware (in case it's named differently), we can try to fetch the first admin or rely on req.admin.id
-    const admin = await prisma.admin.findUnique({
-      where: { id: req.admin ? req.admin.id : 1 }
-    });
+    // Resolve the admin robustly. This is a single-admin system and legacy rows
+    // may have a NULL id (the admin table was created without an id sequence),
+    // so we look up by the token's id when it is valid and otherwise fall back
+    // to the only admin record.
+    const tokenId = req.admin?.id;
+    let admin = null;
+    if (tokenId != null) {
+      admin = await prisma.admin.findUnique({ where: { id: tokenId } });
+    }
+    if (!admin) {
+      admin = await prisma.admin.findFirst();
+    }
 
     if (!admin) {
       return res.status(404).json({ msg: "Admin not found" });
@@ -86,8 +89,10 @@ router.put("/change-credentials", auth, async (req, res) => {
       dataToUpdate.password = await bcrypt.hash(newPassword, salt);
     }
 
+    // Update by the unique username (always present) instead of the id, which
+    // may be NULL on legacy rows and would silently match no row.
     await prisma.admin.update({
-      where: { id: admin.id },
+      where: { username: admin.username },
       data: dataToUpdate,
     });
 

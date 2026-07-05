@@ -140,6 +140,10 @@ export default function PackageDetail() {
             src={packageData.image || "/placeholder.svg"}
             alt={packageData.title}
             className="object-cover w-full h-full"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://placehold.co/1200x600?text=Image+Unavailable";
+            }}
           />
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
@@ -354,6 +358,10 @@ export default function PackageDetail() {
                             currentImageIndex + 1
                           }`}
                           className="object-cover w-full h-full"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://placehold.co/800x400?text=Image+Unavailable";
+                          }}
                         />
                       </div>
 
@@ -391,6 +399,10 @@ export default function PackageDetail() {
                               index + 1
                             }`}
                             className="object-cover w-full h-full"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "https://placehold.co/150?text=N/A";
+                            }}
                           />
                         </button>
                       ))}
@@ -508,6 +520,10 @@ export default function PackageDetail() {
                       src={pkg.image || "/placeholder.svg"}
                       alt={pkg.title}
                       className="object-cover w-full h-full"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://placehold.co/400x300?text=Image+Unavailable";
+                      }}
                     />
                     <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
                       {pkg.category}
